@@ -94,7 +94,15 @@ export const findCompanyLeads = async (company: string, location: string): Promi
   let researchData: { overview: string; contacts: Lead[] } = { overview: '', contacts: [] };
   
   try {
-    researchData = JSON.parse(rawText);
+    // The model sometimes returns the JSON wrapped in markdown ```json ... ``` or with other text.
+    // We'll find the start and end of the JSON object to parse it robustly.
+    const startIndex = rawText.indexOf('{');
+    const endIndex = rawText.lastIndexOf('}');
+    if (startIndex === -1 || endIndex === -1) {
+        throw new Error("No JSON object found in the response.");
+    }
+    const jsonString = rawText.substring(startIndex, endIndex + 1);
+    researchData = JSON.parse(jsonString);
   } catch (e) {
     console.error("Failed to parse Gemini response as JSON:", e);
     console.error("Raw response text:", rawText);

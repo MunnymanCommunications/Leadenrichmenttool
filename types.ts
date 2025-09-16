@@ -14,5 +14,6 @@ export interface GroundingChunkContent {
 }
 
 export interface GroundingChunk {
-    web: GroundingChunkContent;
+    // FIX: The `web` property can be optional in the Gemini API's GroundingChunk type. Making it optional here to resolve the TypeScript error.
+    web?: GroundingChunkContent;
 }
